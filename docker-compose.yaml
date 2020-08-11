@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  
+  flask-app:
+    build: ./flask_app
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    expose:
+      - 9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/volume:/prometheus
+
+  
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: password
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    user: "0"
+    volumes:
+     - ./grafana/volume/data:/var/lib/grafana:z
+     - ./grafana/volume/datasources:/etc/grafana/datasources
+     - ./grafana/volume/dashboards:/etc/grafana/dashboards
+    
